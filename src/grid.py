@@ -14,7 +14,29 @@ class SudokuGrid:
             où ``0`` indique une case vide
         :type initial_values_str: str
         """
-        raise NotImplementedError()
+        # initialisation variables & liste
+        self.myList = []
+        myLign = []
+        i = 1
+
+        # verification taille totale grille
+        if len(initial_values_str) != 81:
+            raise ValueError
+        # boucle for gérant le remplissage des listes
+        for a in range(len(initial_values_str)):
+            try:
+                # conversion str en int
+                case = int(initial_values_str[a])
+                myLign.append(case)
+
+                # test si ligne complete cad 9 valeurs dans la liste myLign
+                if i == 9:
+                    self.myList.append(myLign)
+                    myLign = []
+                    i = 0
+                i += 1
+            except ValueError:
+                raise
 
     @staticmethod
     def from_file(filename, line):
