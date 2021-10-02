@@ -1,4 +1,6 @@
 #-*-coding: utf8-*-
+import string
+
 
 class SudokuGrid:
     """Cette classe représente une grille de Sudoku.
@@ -22,6 +24,7 @@ class SudokuGrid:
         # verification taille totale grille
         if len(initial_values_str) != 81:
             raise ValueError
+
         # boucle for gérant le remplissage des listes
         for a in range(len(initial_values_str)):
             try:
@@ -51,7 +54,16 @@ class SudokuGrid:
         :return: La grille de Sudoku correspondant à la ligne donnée dans le fichier donné
         :rtype: SudokuGrid
         """
-        raise NotImplementedError()
+
+        with open(filename, 'r') as file:
+            for i in range(line):
+                param = file.readline()
+            for i in param:
+                if i == "\n":
+                    param = param[:-1]
+        file.close()
+        return SudokuGrid(str(param))
+
 
     @staticmethod
     def from_stdin():
@@ -62,7 +74,8 @@ class SudokuGrid:
         :return: La grille de Sudoku correspondant à la ligne donnée par l'utilisateur
         :rtype: SudokuGrid
         """
-        raise NotImplementedError()
+        param = input()
+        SudokuGrid(str(param))
 
     def __str__(self):
         """À COMPLÉTER!
@@ -70,7 +83,14 @@ class SudokuGrid:
         :return: Une chaîne de caractère (sur plusieurs lignes...) représentant la grille
         :rtype: str
         """
-        raise NotImplementedError()
+        textGrid = ""
+        for i in range(9):
+            temp = ""
+            for j in range(9):
+                temp += str(self.myList[i][j])
+            textGrid += temp + "\n"
+
+        return textGrid
 
     def get_row(self, i):
         """À COMPLÉTER!
