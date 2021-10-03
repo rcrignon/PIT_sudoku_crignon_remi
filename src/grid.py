@@ -101,7 +101,11 @@ class SudokuGrid:
         :return: La liste des valeurs présentes à la ligne donnée
         :rtype: list of int
         """
-        raise NotImplementedError()
+        listLign = []
+        if 0 <= i < 9:
+            listLign = self.myList[i]
+
+        return listLign
 
     def get_col(self, j):
         """À COMPLÉTER!
@@ -112,7 +116,13 @@ class SudokuGrid:
         :return: La liste des valeurs présentes à la colonne donnée
         :rtype: list of int
         """
-        raise NotImplementedError()
+        listColumn = []
+        if 0 <= j < 9:
+            for i in range(9):
+                temp = self.myList[i][j]
+                listColumn.append(temp)
+
+        return listColumn
 
     def get_region(self, reg_row, reg_col):
         """À COMPLÉTER!
@@ -122,9 +132,43 @@ class SudokuGrid:
         :param reg_col: Position horizontale de la région à extraire, **entre 0 et 2**
         :type reg_row: int
         :type reg_col: int
-        :return: La liste des valeurs présentes à la colonne donnée
+        :return: La liste des valeurs présentes à la région donnée
         :rtype: list of int
         """
+        """global imax_value, imin_value, jmin_value, jmax_value
+        if 0 <= reg_row <= 2 and 0 <= reg_col <= 2:
+            # on définit les range pour i et j selon les zones (=reg) souhaitées
+            match reg_row:
+                case "0":
+                    imin_value = 0
+                    imax_value = 2
+                case "1":
+                    imin_value = 3
+                    imax_value = 5
+                case "2":
+                    imin_value = 6
+                    imax_value = 8
+            match reg_col:
+                case "0":
+                    jmin_value = 0
+                    jmax_value = 2
+                case "1":
+                    jmin_value = 3
+                    jmax_value = 5
+                case "2":
+                    jmin_value = 6
+                    jmax_value = 8
+
+            # on itère maintenant sur les range de i et j définit au-dessus afin de remplir
+            # une liste à double entrée contenant la région souhaitée
+            listReg = []
+            temp = []
+            for i in range(imin_value, imax_value):
+                for j in range(jmin_value, jmax_value):
+                    temp.append(self.myList[i][j])
+                listReg.append(temp)
+
+            return listReg"""
         raise NotImplementedError()
 
     def get_empty_positions(self):
@@ -135,7 +179,15 @@ class SudokuGrid:
         :return: La liste des positions des cases vides dans la grille
         :rtype: list of tuple of int
         """
-        raise NotImplementedError()
+        listCoord = []
+        coord = (0, 0)
+        for i in range(9):
+            for j in range(9):
+                if self.myList[i][j] == 0:
+                    coord = (i, j)
+                    listCoord.append(coord)
+
+        return listCoord
 
     def write(self, i, j, v):
         """À COMPLÉTER!
@@ -148,7 +200,7 @@ class SudokuGrid:
         :param j: Numéro de colonne de la case à mettre à jour, entre 0 et 8
         :param v: Valeur à écrire dans la case ``(i,j)``, entre 1 et 9
         """
-        raise NotImplementedError()
+        self.myList[i][j] = v
 
     def copy(self):
         """À COMPLÉTER!
@@ -159,4 +211,10 @@ class SudokuGrid:
         :return: Une copie de la grille courrante
         :rtype: SudokuGrid
         """
-        raise NotImplementedError()
+        copyGrid = ""
+        for i in range(9):
+            for j in range(9):
+                copyGrid += str(self.myList[i][j])
+        newSudokuGrid = SudokuGrid(copyGrid)
+
+        return newSudokuGrid

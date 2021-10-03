@@ -59,7 +59,7 @@ class TestSudokuGrid(unittest.TestCase):
                 [4, 0, 2, 0, 0, 0, 0, 0, 0])
 
     def test_07_empty_pos(self):
-        self.assertEqual(set(self._grid.get_empty_pos()),
+        self.assertEqual(set(self._grid.get_empty_positions()),
                 {(7, 3), (4, 7), (1, 3), (4, 8), (5, 6), (6, 6), (8, 0), (7, 7), (0, 7), (2, 1), (6, 2),
                     (3, 7), (0, 3), (5, 1), (8, 5), (4, 0), (1, 2), (6, 7), (3, 3), (5, 5), (8, 1), (7, 6),
                     (4, 4), (1, 5), (3, 6), (2, 2), (0, 4), (4, 1), (1, 1), (6, 4), (3, 2), (2, 6), (8, 2),
@@ -69,7 +69,7 @@ class TestSudokuGrid(unittest.TestCase):
 
     def test_08_write(self):
         for _ in range(4):
-            i, j = random.choice(list(self._grid.get_empty_pos()))
+            i, j = random.choice(list(self._grid.get_empty_positions()))
             val = random.randint(1, 9)
             self._grid.write(i, j, val)
             self.assertEqual(list(self._grid.get_row(i))[j], val)
@@ -78,7 +78,7 @@ class TestSudokuGrid(unittest.TestCase):
         grid = self._grid.copy()
         for i in range(9):
             self.assertEqual(list(grid.get_row(i)), list(self._grid.get_row(i)))
-        i, j = random.choice(list(self._grid.get_empty_pos()))
+        i, j = random.choice(list(self._grid.get_empty_positions()))
         val = random.randint(1, 9)
         grid.write(i, j, val)
         self.assertEqual(list(self._grid.get_row(i))[j], 0)
