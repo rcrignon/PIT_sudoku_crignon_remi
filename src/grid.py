@@ -135,41 +135,15 @@ class SudokuGrid:
         :return: La liste des valeurs présentes à la région donnée
         :rtype: list of int
         """
-        """global imax_value, imin_value, jmin_value, jmax_value
+        listReg = []
+        # test valeurs renseignees en params
         if 0 <= reg_row <= 2 and 0 <= reg_col <= 2:
-            # on définit les range pour i et j selon les zones (=reg) souhaitées
-            match reg_row:
-                case "0":
-                    imin_value = 0
-                    imax_value = 2
-                case "1":
-                    imin_value = 3
-                    imax_value = 5
-                case "2":
-                    imin_value = 6
-                    imax_value = 8
-            match reg_col:
-                case "0":
-                    jmin_value = 0
-                    jmax_value = 2
-                case "1":
-                    jmin_value = 3
-                    jmax_value = 5
-                case "2":
-                    jmin_value = 6
-                    jmax_value = 8
+            # on itère maintenant sur i et j afin de remplir une liste contenant la région souhaitée
+            for i in range(3):
+                for j in range(3):
+                    listReg.append(self.myList[reg_row*3+i][reg_col*3+j])
 
-            # on itère maintenant sur les range de i et j définit au-dessus afin de remplir
-            # une liste à double entrée contenant la région souhaitée
-            listReg = []
-            temp = []
-            for i in range(imin_value, imax_value):
-                for j in range(jmin_value, jmax_value):
-                    temp.append(self.myList[i][j])
-                listReg.append(temp)
-
-            return listReg"""
-        raise NotImplementedError()
+        return listReg
 
     def get_empty_positions(self):
         """À COMPLÉTER!
