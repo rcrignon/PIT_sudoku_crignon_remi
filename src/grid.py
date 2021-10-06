@@ -1,7 +1,6 @@
 #-*-coding: utf8-*-
 import string
 
-
 class SudokuGrid:
     """Cette classe représente une grille de Sudoku.
     Toutes ces méthodes sont à compléter en vous basant sur la documentation fournie en docstring.
@@ -22,24 +21,26 @@ class SudokuGrid:
         i = 1
 
         # verification taille totale grille
-        if len(initial_values_str) != 81:
-            raise ValueError
-
+        if len(initial_values_str) == 81:
         # boucle for gérant le remplissage des listes
-        for a in range(len(initial_values_str)):
-            try:
-                # conversion str en int
-                case = int(initial_values_str[a])
-                myLign.append(case)
+            for a in range(len(initial_values_str)):
+                try:
+                    # conversion str en int
+                    case = int(initial_values_str[a])
+                    myLign.append(case)
 
-                # test si ligne complete cad 9 valeurs dans la liste myLign
-                if i == 9:
-                    self.myList.append(myLign)
-                    myLign = []
-                    i = 0
-                i += 1
-            except ValueError:
-                raise
+                    # test si ligne complete cad 9 valeurs dans la liste myLign
+                    if i == 9:
+                        self.myList.append(myLign)
+                        myLign = []
+                        i = 0
+                    i += 1
+                except ValueError:
+                    print("Le gameset ne doit uniquement être composé que de chiffres. (Value Error)")
+                    raise
+        else:
+            print("Le gameset doit comporter exactement 81 chiffres.")
+            raise ValueError
 
     @staticmethod
     def from_file(filename, line):
@@ -102,8 +103,10 @@ class SudokuGrid:
         :rtype: list of int
         """
         listLign = []
-        if 0 <= i < 9:
-            listLign = self.myList[i]
+        if i in range(9):
+            listLign = (self.myList[i][colonne] for colonne in range(9))
+        else:
+            print("Veuillez entrer une ligne comprise dans [0;8]")
 
         return listLign
 
@@ -117,10 +120,10 @@ class SudokuGrid:
         :rtype: list of int
         """
         listColumn = []
-        if 0 <= j < 9:
-            for i in range(9):
-                temp = self.myList[i][j]
-                listColumn.append(temp)
+        if j in range(9):
+            listColumn = (self.myList[ligne][j] for ligne in range(9))
+        else:
+            print("Veuillez entrer une ligne comprise dans [0;8]")
 
         return listColumn
 
@@ -137,11 +140,9 @@ class SudokuGrid:
         """
         listReg = []
         # test valeurs renseignees en params
-        if 0 <= reg_row <= 2 and 0 <= reg_col <= 2:
+        if reg_row in range(3) and reg_col in range(3):
             # on itère maintenant sur i et j afin de remplir une liste contenant la région souhaitée
-            for i in range(3):
-                for j in range(3):
-                    listReg.append(self.myList[reg_row*3+i][reg_col*3+j])
+            listReg = (self.myList[i + reg_row * 3][j + reg_col * 3] for i in range(3) for j in range(3))
 
         return listReg
 
@@ -153,13 +154,13 @@ class SudokuGrid:
         :return: La liste des positions des cases vides dans la grille
         :rtype: list of tuple of int
         """
-        listCoord = []
+        """ listCoord = []
         coord = (0, 0)
         for i in range(9):
             for j in range(9):
                 if self.myList[i][j] == 0:
-                    coord = (i, j)
-                    listCoord.append(coord)
+                    listCoord.append((i, j))"""
+        listCoord = ((i, j) for i in range(9) for j in range(9) if self.myList[i][j] == 0)
 
         return listCoord
 
@@ -174,7 +175,8 @@ class SudokuGrid:
         :param j: Numéro de colonne de la case à mettre à jour, entre 0 et 8
         :param v: Valeur à écrire dans la case ``(i,j)``, entre 1 et 9
         """
-        self.myList[i][j] = v
+        if i in range(9) and j in range(9) and v in range(1, 10) and (self.myList[i][j] == 0):
+            self.myList[i][j] = v
 
     def copy(self):
         """À COMPLÉTER!
@@ -185,10 +187,8 @@ class SudokuGrid:
         :return: Une copie de la grille courrante
         :rtype: SudokuGrid
         """
-        copyGrid = ""
-        for i in range(9):
-            for j in range(9):
-                copyGrid += str(self.myList[i][j])
-        newSudokuGrid = SudokuGrid(copyGrid)
+        copyGrid = [[self.myList[i][j] for j in range(9)] for i in range(9)]
+        new_grid = self.__new__(self.__class__)
+        new_grid.myList = copyGrid
 
-        return newSudokuGrid
+        return new_grid

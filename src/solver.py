@@ -14,7 +14,9 @@ class SudokuSolver:
         :param grid: Une grille de Sudoku
         :type grid: SudokuGrid
         """
-        raise NotImplementedError()
+        self.solutions = []
+        self.grid = grid
+        self.reduce_all_domains()
 
     def reduce_all_domains(self):
         """À COMPLÉTER
@@ -22,7 +24,17 @@ class SudokuSolver:
         et élimine toutes les valeurs impossibles pour chaque case vide.
         *Indication: Vous pouvez utiliser les fonction ``get_row``, ``get_col`` et ``get_region`` de la grille*
         """
-        raise NotImplementedError()
+        for element in self.grid.get_empty_pos():
+            liste_valeurs_possibles = set()
+            ligne_tuple = list(self.grid.get_row(element[0]))
+            colonne_tuple = list(self.grid.get_col(element[1]))
+            region_tuple = list(self.grid.get_region(element[0] // 3, element[1] // 3))
+
+            for i in range(1, 10):
+                if i not in ligne_tuple and i not in colonne_tuple and i not in region_tuple:
+                    liste_valeurs_possibles.add(i)
+
+            self.solutions.append((element, liste_valeurs_possibles))
 
     def reduce_domains(self, last_i, last_j, last_v):
         """À COMPLÉTER
@@ -36,7 +48,12 @@ class SudokuSolver:
         :type last_j: int
         :type last_v: int
         """
-        raise NotImplementedError()
+        for element in self.solutions:
+            region_element = (element[0][0] // 3, element[0][1] // 3)
+            region_last = (last_i // 3, last_j // 3)
+            if last_v in element[1] and (
+                    element[0][0] == last_i or element[0][1] == last_j or (region_element == region_last)):
+                element[1].remove(last_v)
 
     def commit_one_var(self):
         """À COMPLÉTER
