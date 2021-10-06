@@ -1,4 +1,6 @@
-#-*-coding: utf8-*-
+# -*-coding: utf8-*-
+import operator
+from grid import *
 
 class SudokuSolver:
     """Cette classe permet d'explorer les solutions d'une grille de Sudoku pour la résoudre.
@@ -24,7 +26,7 @@ class SudokuSolver:
         et élimine toutes les valeurs impossibles pour chaque case vide.
         *Indication: Vous pouvez utiliser les fonction ``get_row``, ``get_col`` et ``get_region`` de la grille*
         """
-        for element in self.grid.get_empty_pos():
+        for element in self.grid.get_empty_positions():
             liste_valeurs_possibles = set()
             ligne_tuple = list(self.grid.get_row(element[0]))
             colonne_tuple = list(self.grid.get_col(element[1]))
@@ -64,7 +66,14 @@ class SudokuSolver:
         ou ``None`` si aucune case n'a pu être remplie.
         :rtype: tuple of int or None
         """
-        raise NotImplementedError()
+        infos = ()
+        for element in self.solutions:
+            if len(element[1]) == 1:
+                self.grid.write(element[0][0], element[0][1], next(iter(element[1])))
+                infos = (element[0][0], element[0][1], next(iter(element[1])))
+                return infos
+
+        return None
 
     def solve_step(self):
         """À COMPLÉTER
@@ -76,7 +85,15 @@ class SudokuSolver:
         il est aussi possible de vérifier s'il ne reste plus qu'une seule position valide pour une certaine valeur
         sur chaque ligne, chaque colonne et dans chaque région*
         """
-        raise NotImplementedError()
+        last_change = -1
+        while last_change is not None:
+            last_change = self.commit_one_var()
+            if last_change is not None:
+                self.reduce_domains(last_change[0], last_change[1], last_change[2])
+                self.clean_solutions(last_change)
+                last_change = ()
+            else:
+                pass
 
     def is_valid(self):
         """À COMPLÉTER
@@ -85,7 +102,11 @@ class SudokuSolver:
         :return: Un booléen indiquant si la solution partielle actuelle peut encore mener à une solution valide
         :rtype: bool
         """
-        raise NotImplementedError()
+        for element in self.solutions:
+            if element[1] != set():
+                return True
+            else:
+                return False
 
     def is_solved(self):
         """À COMPLÉTER
@@ -94,7 +115,11 @@ class SudokuSolver:
         :return: Un booléen indiquant si la solution actuelle est complète.
         :rtype: bool
         """
-        raise NotImplementedError()
+        solution_complete = False
+        if not list(self.grid.get_empty_positions()):
+            solution_complete = True
+
+        return solution_complete
 
     def branch(self):
         """À COMPLÉTER
@@ -109,7 +134,19 @@ class SudokuSolver:
         :return: Une liste de sous-problèmes ayant chacun une valeur différente pour la variable choisie
         :rtype: list of SudokuSolver
         """
-        raise NotImplementedError()
+        list_solutions = []
+        coordonnees_mini = ()
+        set_mini = {}
+        self.solutions.sort(key=lambda oui: len(oui[1]))
+        coordonnees_mini = self.solutions[0][0]
+        set_mini = self.solutions[0][1]
+        for i in set_mini:
+            grille_sudoku_en_cours = self.grid.copy()
+            grille_sudoku_en_cours.write(coordonnees_mini[0], coordonnees_mini[1], i)
+            sous_probleme = self.__class__(grille_sudoku_en_cours)
+            list_solutions.append(sous_probleme)
+
+        return list_solutions
 
     def solve(self):
         """
@@ -124,4 +161,18 @@ class SudokuSolver:
         (ou None si pas de solution)
         :rtype: SudokuGrid or None
         """
-        raise NotImplementedError()
+        self.solve_step()
+        if self.is_solved():
+            return self.grid
+        elif self.is_valid():
+            oui = self.branch()
+            for element in oui:
+                s = element.solve()
+                if s is not None:
+                    return s
+            return None
+        else:
+            return None
+
+    def clean_solutions(self, last_change):
+        self.solutions.remove(((last_change[0], last_change[1]), set()))

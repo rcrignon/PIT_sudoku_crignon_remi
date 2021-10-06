@@ -143,6 +143,8 @@ class SudokuGrid:
         if reg_row in range(3) and reg_col in range(3):
             # on itère maintenant sur i et j afin de remplir une liste contenant la région souhaitée
             listReg = (self.myList[i + reg_row * 3][j + reg_col * 3] for i in range(3) for j in range(3))
+        else:
+            print("Veuillez entrer des positions de région comprises dans [0;2]")
 
         return listReg
 
